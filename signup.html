@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Signup</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{background:#0f172a;color:#fff;font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh}
+.box{width:350px;background:#111827;padding:25px;border-radius:10px}
+input,button{width:100%;padding:12px;margin:6px 0;border-radius:6px;border:none}
+button{background:#22c55e;color:#fff;font-size:16px}
+a{color:#22c55e;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Create Account</h2>
+
+<input type="email" id="email">
+<input type="password" id="password">
+
+<button onclick="signup()">Signup</button>
+
+<p>Already have account? <a href="index.html">Login</a></p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+
+function signup(){
+ auth.createUserWithEmailAndPassword(email.value,password.value)
+ .then(()=>location.href="dashboard.html")
+ .catch(e=>alert(e.message));
+}
+</script>
+</body>
+</html>
