@@ -1,71 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#0f172a;
-  font-family:Arial;
-}
-
-.login-box{
-  width:360px;
-  background:#111827;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 0 25px rgba(0,0,0,.6);
-  color:#fff;
-}
-
-.login-box h2{
-  text-align:center;
-  margin-bottom:20px;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
-  border:none;
-  outline:none;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  background:#f97316;
-  border:none;
-  border-radius:8px;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.social{
-  background:#1f2937;
-}
-
-.or{
-  text-align:center;
-  margin:12px 0;
-  color:#9ca3af;
-}
+body{background:#0f172a;color:#fff;font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh}
+.box{width:350px;background:#111827;padding:25px;border-radius:10px}
+input,button{width:100%;padding:12px;margin:6px 0;border-radius:6px;border:none}
+button{background:#f97316;color:#fff;font-size:16px}
+a{color:#f97316;text-decoration:none}
 </style>
 </head>
-
 <body>
 
-<div class="login-box">
+<div class="box">
 <h2>Login</h2>
 
 <input type="email" id="email" placeholder="Email">
@@ -73,51 +21,40 @@ button{
 
 <button onclick="login()">Login</button>
 
-<div class="or">OR</div>
+<p>Don't have account? <a href="signup.html">Signup</a></p>
 
-<button class="social" onclick="googleLogin()">Continue with Google</button>
-<button class="social" onclick="facebookLogin()">Continue with Facebook</button>
-
+<button onclick="googleLogin()">Google Login</button>
+<button onclick="facebookLogin()">Facebook Login</button>
 </div>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE",
-  projectId: "PASTE",
-  appId: "PASTE"
+const firebaseConfig={
+ apiKey:"PASTE",
+ authDomain:"PASTE",
+ projectId:"PASTE",
+ appId:"PASTE"
 };
-
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const auth=firebase.auth();
 
 function login(){
- auth.signInWithEmailAndPassword(
-  email.value,
-  password.value
- ).then(()=>{
-  window.location.href="dashboard.html";
- }).catch(e=>alert(e.message));
+ auth.signInWithEmailAndPassword(email.value,password.value)
+ .then(()=>location.href="dashboard.html")
+ .catch(e=>alert(e.message));
 }
 
 function googleLogin(){
- const provider = new firebase.auth.GoogleAuthProvider();
- auth.signInWithPopup(provider).then(()=>{
-  window.location.href="dashboard.html";
- });
+ const p=new firebase.auth.GoogleAuthProvider();
+ auth.signInWithPopup(p).then(()=>location.href="dashboard.html");
 }
 
 function facebookLogin(){
- const provider = new firebase.auth.FacebookAuthProvider();
- auth.signInWithPopup(provider).then(()=>{
-  window.location.href="dashboard.html";
- });
+ const p=new firebase.auth.FacebookAuthProvider();
+ auth.signInWithPopup(p).then(()=>location.href="dashboard.html");
 }
 </script>
-
 </body>
 </html>
