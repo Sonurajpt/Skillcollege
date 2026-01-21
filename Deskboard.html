@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BrandBuzz - My Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-cyan-50 to-white min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+          <span class="text-3xl">❤️</span>
+          <span class="text-xl sm:text-2xl font-bold text-orange-500">BrandBuzz</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="hidden sm:block text-gray-700">Welcome, <strong id="userName">User</strong>!</span>
+          <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <div class="bg-orange-500 text-white rounded-3xl p-8 mb-10 text-center shadow-xl">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-3">Welcome back, <span id="welcomeName">Sonu</span>! 🚀</h1>
+      <p class="text-lg sm:text-xl">Choose courses and level up your marketing skills</p>
+    </div>
+
+    <!-- Enrolled Courses -->
+    <section class="mb-16">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Your Enrolled Courses</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600" alt="Course" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Advanced SEO Mastery</h3>
+            <p class="text-gray-600 mb-4">Progress: 65%</p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+              <div class="bg-orange-500 h-2.5 rounded-full" style="width: 65%"></div>
+            </div>
+            <button class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition">
+              Continue Learning
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Available Courses -->
+    <section>
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Available Courses - Buy Now!</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="courses-container"></div>
+    </section>
+
+  </div>
+
+  <script>
+    // Load user name from localStorage
+    const userName = localStorage.getItem('userName') || 'User';
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('welcomeName').textContent = userName;
+
+    // Fake courses
+    const courses = [
+      { title: "Viral Marketing Campaigns", price: "₹999", desc: "Create content that spreads like fire", img: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600" },
+      { title: "Google Ads Mastery", price: "₹1499", desc: "Run profitable paid campaigns", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600" },
+      { title: "Social Media 2026", price: "₹799", desc: "Latest trends for all platforms", img: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600" },
+      { title: "Content Creation Pro", price: "₹1299", desc: "Reels, Shorts, Blogs & more", img: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600" }
+    ];
+
+    const container = document.getElementById('courses-container');
+    courses.forEach(course => {
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition';
+      card.innerHTML = `
+        <img src="\( {course.img}" alt=" \){course.title}" class="w-full h-48 object-cover" />
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-2">${course.title}</h3>
+          <p class="text-gray-600 mb-4">${course.desc}</p>
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-2xl font-bold text-orange-500">${course.price}</span>
+          </div>
+          <button class="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition buy-btn">
+            Buy Now
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Buy button alert
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert('Course purchased! (Demo mode - payment gateway add kar sakte hain)');
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem('userName');
+      alert('Logged out successfully!');
+      window.location.href = 'login.html';
+    }
+  </script>
+
+</body>
+</html>
