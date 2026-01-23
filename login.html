@@ -14,24 +14,22 @@
 
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-orange-100">
 
-    <!-- Logo -->
     <div class="text-center mb-8">
       <div class="flex justify-center items-center gap-2 text-4xl mb-2">
         <span>❤️</span>
         <span class="font-bold text-orange-500">BrandBuzz</span>
       </div>
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Welcome Back</h2>
-      <p class="text-gray-500 mt-2">Login to manage your campaigns</p>
+      <p class="text-gray-500 mt-2">Login to manage your campaigns & courses</p>
     </div>
 
-    <!-- Form -->
-    <form class="space-y-6">
-
+    <form id="loginForm" class="space-y-6">
       <div>
         <label class="block text-gray-700 font-medium mb-2">Email</label>
         <input 
           type="email" 
-          placeholder="you@company.com" 
+          id="email"
+          placeholder="sonu@example.com" 
           class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
           required
         />
@@ -41,6 +39,7 @@
         <label class="block text-gray-700 font-medium mb-2">Password</label>
         <input 
           type="password" 
+          id="password"
           placeholder="••••••••" 
           class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
           required
@@ -59,26 +58,87 @@
         type="submit"
         class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-lg"
       >
-        Log In
+        Log In with Email
       </button>
-
     </form>
 
-    <!-- Social login (optional) -->
     <div class="my-8 text-center text-gray-500">OR</div>
 
-    <button class="w-full border border-gray-300 py-4 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-50 transition mb-6">
+    <button 
+      onclick="signInWithGoogle()"
+      class="w-full border border-gray-300 py-4 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-50 transition mb-6"
+    >
       <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google" class="w-6 h-6" />
       Continue with Google
     </button>
 
-    <!-- Signup link -->
     <p class="text-center text-gray-600">
       Don't have an account? 
       <a href="signup.html" class="text-orange-600 font-semibold hover:underline">Sign up</a>
     </p>
-
   </div>
 
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+    // 🔥 Yahan apna real Firebase config paste kar do (console se copy)
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDSqFv0HkpOz3DpAzXP1ZZO5yWNFcLmu3M",
+  authDomain: "ostsc-apk-store.firebaseapp.com",
+  projectId: "ostsc-apk-store",
+  storageBucket: "ostsc-apk-store.firebasestorage.app",
+  messagingSenderId: "77673844791",
+  appId: "1:77673844791:web:d0a0fc312b0b352e392fb2",
+  measurementId: "G-0J1JB5V7XG"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Email login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert('Login successful!');
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Error: ' + (error.code === 'auth/wrong-password' ? 'Incorrect password' : error.message));
+      }
+    });
+
+    // Google Popup login
+    window.signInWithGoogle = async () => {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' }); // Har baar account choose karne de
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        alert('Google login successful! Welcome ' + (user.displayName || user.email));
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Google sign-in failed: ' + error.message);
+        console.error(error);
+      }
+    };
+
+    // Redirect if already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = 'dashboard.html';
+    });
+  </script>
 </body>
 </html>
