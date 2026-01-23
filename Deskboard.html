@@ -12,7 +12,6 @@
 </head>
 <body class="bg-gradient-to-br from-cyan-50 to-white min-h-screen">
 
-  <!-- Navbar -->
   <nav class="bg-white shadow-lg sticky top-0 z-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
@@ -31,13 +30,12 @@
   </nav>
 
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
     <div class="bg-orange-500 text-white rounded-3xl p-8 mb-10 text-center shadow-xl">
-      <h1 class="text-3xl sm:text-4xl font-bold mb-3">Welcome back, <span id="welcomeName">Sonu</span>! 🚀</h1>
-      <p class="text-lg sm:text-xl">Choose courses and level up your marketing skills</p>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-3">Welcome back, <span id="welcomeName">User</span>! 🚀</h1>
+      <p class="text-lg sm:text-xl">Explore & buy new marketing courses to level up your skills</p>
     </div>
 
-    <!-- Enrolled Courses -->
+    <!-- Enrolled Courses (fake) -->
     <section class="mb-16">
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Your Enrolled Courses</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -62,14 +60,41 @@
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Available Courses - Buy Now!</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="courses-container"></div>
     </section>
-
   </div>
 
-  <script>
-    // Load user name from localStorage
-    const userName = localStorage.getItem('userName') || 'User';
-    document.getElementById('userName').textContent = userName;
-    document.getElementById('welcomeName').textContent = userName;
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDSqFv0HkpOz3DpAzXP1ZZO5yWNFcLmu3M",
+  authDomain: "ostsc-apk-store.firebaseapp.com",
+  projectId: "ostsc-apk-store",
+  storageBucket: "ostsc-apk-store.firebasestorage.app",
+  messagingSenderId: "77673844791",
+  appId: "1:77673844791:web:d0a0fc312b0b352e392fb2",
+  measurementId: "G-0J1JB5V7XG"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0] || 'User';
+        document.getElementById('userName').textContent = name;
+        document.getElementById('welcomeName').textContent = name;
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+
+    window.logout = () => {
+      signOut(auth).then(() => {
+        alert('Logged out!');
+        window.location.href = 'login.html';
+      }).catch(err => alert('Logout error: ' + err.message));
+    };
 
     // Fake courses
     const courses = [
@@ -91,27 +116,13 @@
           <div class="flex justify-between items-center mb-4">
             <span class="text-2xl font-bold text-orange-500">${course.price}</span>
           </div>
-          <button class="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition buy-btn">
+          <button class="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
             Buy Now
           </button>
         </div>
       `;
       container.appendChild(card);
     });
-
-    // Buy button alert
-    document.querySelectorAll('.buy-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        alert('Course purchased! (Demo mode - payment gateway add kar sakte hain)');
-      });
-    });
-
-    function logout() {
-      localStorage.removeItem('userName');
-      alert('Logged out successfully!');
-      window.location.href = 'login.html';
-    }
   </script>
-
 </body>
 </html>
