@@ -14,34 +14,22 @@
 
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-orange-100">
 
-    <!-- Logo -->
     <div class="text-center mb-8">
       <div class="flex justify-center items-center gap-2 text-4xl mb-2">
         <span>❤️</span>
         <span class="font-bold text-orange-500">BrandBuzz</span>
       </div>
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Create Account</h2>
-      <p class="text-gray-500 mt-2">Join the best marketing platform today</p>
+      <p class="text-gray-500 mt-2">Join and start your marketing journey</p>
     </div>
 
-    <!-- Form -->
-    <form class="space-y-5">
-
+    <form id="signupForm" class="space-y-5">
       <div>
-        <label class="block text-gray-700 font-medium mb-2">Full Name</label>
-        <input 
-          type="text" 
-          placeholder="John Doe" 
-          class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
-          required
-        />
-      </div>
-
-      <div>
-        <label class="block text-gray-700 font-medium mb-2">Business Email</label>
+        <label class="block text-gray-700 font-medium mb-2">Email</label>
         <input 
           type="email" 
-          placeholder="you@company.com" 
+          id="email"
+          placeholder="sonu@example.com" 
           class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
           required
         />
@@ -51,54 +39,95 @@
         <label class="block text-gray-700 font-medium mb-2">Password</label>
         <input 
           type="password" 
-          placeholder="At least 8 characters" 
+          id="password"
+          placeholder="At least 6 characters" 
           class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
           required
         />
-      </div>
-
-      <div>
-        <label class="block text-gray-700 font-medium mb-2">Confirm Password</label>
-        <input 
-          type="password" 
-          placeholder="Confirm your password" 
-          class="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
-          required
-        />
-      </div>
-
-      <div class="flex items-center gap-2 text-sm">
-        <input type="checkbox" class="w-4 h-4 text-orange-500 rounded" required />
-        <span class="text-gray-600">
-          I agree to the <a href="#" class="text-orange-600 hover:underline">Terms</a> & 
-          <a href="#" class="text-orange-600 hover:underline">Privacy Policy</a>
-        </span>
       </div>
 
       <button 
         type="submit"
         class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition shadow-lg mt-2"
       >
-        Create Account
+        Sign Up with Email
       </button>
-
     </form>
 
-    <!-- Social signup -->
     <div class="my-8 text-center text-gray-500">OR</div>
 
-    <button class="w-full border border-gray-300 py-4 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-50 transition mb-6">
+    <button 
+      onclick="signInWithGoogle()"
+      class="w-full border border-gray-300 py-4 rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-gray-50 transition mb-6"
+    >
       <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google" class="w-6 h-6" />
       Sign up with Google
     </button>
 
-    <!-- Login link -->
     <p class="text-center text-gray-600">
       Already have an account? 
       <a href="login.html" class="text-orange-600 font-semibold hover:underline">Log in</a>
     </p>
-
   </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDSqFv0HkpOz3DpAzXP1ZZO5yWNFcLmu3M",
+  authDomain: "ostsc-apk-store.firebaseapp.com",
+  projectId: "ostsc-apk-store",
+  storageBucket: "ostsc-apk-store.firebasestorage.app",
+  messagingSenderId: "77673844791",
+  appId: "1:77673844791:web:d0a0fc312b0b352e392fb2",
+  measurementId: "G-0J1JB5V7XG"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Email signup
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (password.length < 6) return alert('Password must be at least 6 characters');
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert('Account created! Now login.');
+        window.location.href = 'login.html';
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+
+    // Google signup/login (same function - Firebase handles both)
+    window.signInWithGoogle = async () => {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        alert('Google success! Welcome ' + (result.user.displayName || result.user.email));
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Google failed: ' + error.message);
+      }
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = 'dashboard.html';
+    });
+  </script>
 </body>
 </html>
